@@ -1,0 +1,13 @@
+{
+  "name": "hello-compliance-deployment",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Acceptance tests for one-pipeline demo application",
+  "scripts": {
+    "acceptance-test": "jest ./acceptance-test"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2",
+    "axios": "^0.20.0"
+  }
+}
