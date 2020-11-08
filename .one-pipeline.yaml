@@ -8,7 +8,7 @@ setup:
     npm ci
 
 deploy:
-  exit-on-failure: true
+  abort_on_failure: true
   image: ibmcom/pipeline-base-image:2.9
   script: |
     #!/usr/bin/env bash
