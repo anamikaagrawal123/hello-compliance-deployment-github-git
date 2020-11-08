@@ -1,3 +1,6 @@
+# Documentation on available configuration
+# https://pages.github.ibm.com/one-pipeline/docs/custom-scripts.html
+
 version: '1'
 
 setup:
