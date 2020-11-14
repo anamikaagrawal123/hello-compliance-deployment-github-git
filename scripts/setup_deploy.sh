@@ -19,7 +19,6 @@ fi
 IBMCLOUD_IKS_REGION="$(cat /config/dev-region | awk -F ":" '{print $NF}')"
 IBMCLOUD_IKS_CLUSTER_NAMESPACE="$(cat /config/dev-cluster-namespace)"
 IBMCLOUD_IKS_CLUSTER_NAME="$(cat /config/cluster-name)"
-IMAGE_PULL_SECRET_NAME="ibmcloud-toolchain-${IBMCLOUD_TOOLCHAIN_ID}-${REGISTRY_URL}"
 
 TARGET_ENVIRONMENT="$(cat /config/environment)"
 INVENTORY_PATH="$(cat /config/inventory-path)"
@@ -46,6 +45,7 @@ fi
 ARTIFACT=$(cat "${INVENTORY_PATH}/$APP" | jq -r '.artifact')
 REGISTRY_URL="$(echo $ARTIFACT | awk -F/ '{print $1}')"
 IMAGE="$REGISTRY_URL/$(echo $ARTIFACT | awk -F "/|@" '{print $2"/"$3"@"$4}')"
+IMAGE_PULL_SECRET_NAME="ibmcloud-toolchain-${IBMCLOUD_TOOLCHAIN_ID}-${REGISTRY_URL}"
 
 echo $ARTIFACT
 echo $REGISTRY_URL
