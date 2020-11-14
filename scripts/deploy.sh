@@ -10,6 +10,8 @@ else
   kubectl create namespace "$IBMCLOUD_IKS_CLUSTER_NAMESPACE";
 fi
 
+
+
 if kubectl get secret -n "$IBMCLOUD_IKS_CLUSTER_NAMESPACE" "$IMAGE_PULL_SECRET_NAME"; then
   echo "Image pull secret ${IMAGE_PULL_SECRET_NAME} found!"
 else
