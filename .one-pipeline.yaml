@@ -11,7 +11,7 @@ setup:
     npm ci
 
 deploy:
-  image: ibmcom/pipeline-base-image:2.9
+  image: ibmcom/pipeline-base-image:2.6
   script: |
     #!/usr/bin/env bash
 
