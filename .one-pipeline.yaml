@@ -29,7 +29,4 @@ acceptance-test:
   script: |
     #!/usr/bin/env bash
 
-    source /root/.nvm/nvm.sh
-    npm ci
-    export APP_URL=$(cat ../app-url)
-    npm run acceptance-test
+    source scripts/test.sh
