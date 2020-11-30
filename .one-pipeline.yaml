@@ -11,8 +11,7 @@ setup:
     npm ci
 
 deploy:
-  abort_on_failure: true
-  image: ibmcom/pipeline-base-image:2.9
+  image: ibmcom/pipeline-base-image:2.6
   script: |
     #!/usr/bin/env bash
 
@@ -22,7 +21,7 @@ deploy:
       set -x
     fi
 
-    source scripts/setup_deploy.sh
+    source scripts/deploy_setup.sh
     source scripts/deploy.sh
 
 acceptance-test:
