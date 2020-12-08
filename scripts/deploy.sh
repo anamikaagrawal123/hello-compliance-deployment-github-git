@@ -18,9 +18,13 @@ overall_status=success
 for INVENTORY_ENTRY in $(echo "${DEPLOYMENT_DELTA}" | jq -r '.[] '); do
 
   APP=$(cat "${INVENTORY_PATH}/${INVENTORY_ENTRY}")
+
   if [ -z "$(echo "${APP}" | jq -r '.name' 2> /dev/null)" ]; then continue ; fi # skip non artifact file
 
   APP_NAME=$(echo "${APP}" | jq -r '.name')
+
+  if [[ $APP_NAME =~ _deployment$ ]]; then continue ; fi # skip deployment yamls
+
   ARTIFACT=$(echo "${APP}" | jq -r '.artifact')
   REGISTRY_URL="$(echo "${ARTIFACT}" | awk -F/ '{print $1}')"
   IMAGE="${ARTIFACT}"
@@ -74,22 +78,36 @@ EOF
   fi
 
   #
-  # create "different" deployment yamls for deployed apps
+  # get the deployment yaml for the app from inventory
   #
-  cp deployment.yaml tmp-deployment.yaml
+  DEPLOYMENT_INVENTORY=$(cat "${INVENTORY_PATH}/${INVENTORY_ENTRY}_deployment")
   NORMALIZED_APP_NAME=$(echo "${APP_NAME}" | sed 's/\//--/g')
-  sed -i "s#hello-compliance-app#${NORMALIZED_APP_NAME}#g" tmp-deployment.yaml
-  sed -i "s#hello-service#${NORMALIZED_APP_NAME}-service#g" tmp-deployment.yaml
 
-  sed -i "s~^\([[:blank:]]*\)image:.*$~\1image: ${IMAGE}~" tmp-deployment.yaml
+  # we're in the deploy script folder, the GHE token is one folder up
+  export GHE_TOKEN="$(cat ../git-token)"
 
-  deployment_name=$(yq r tmp-deployment.yaml metadata.name)
-  service_name=$(yq r -d1 tmp-deployment.yaml metadata.name)
+  #
+  # read inventory entry for artifact
+  #
+  ARTIFACT_URL=$(echo "$DEPLOYMENT_INVENTORY" | jq -r '.artifact')
+
+  #
+  # download artifact
+  #
+  DEPLOYMENT_FILE="${NORMALIZED_APP_NAME}-deployment.yaml"
+  curl -H "Authorization: token ${GHE_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
+
+  sed -i "s#hello-compliance-app#${NORMALIZED_APP_NAME}#g" $DEPLOYMENT_FILE
+  sed -i "s#hello-service#${NORMALIZED_APP_NAME}-service#g" $DEPLOYMENT_FILE
+  sed -i "s~^\([[:blank:]]*\)image:.*$~\1image: ${IMAGE}~" $DEPLOYMENT_FILE
+
+  deployment_name=$(yq r "$DEPLOYMENT_FILE" metadata.name)
+  service_name=$(yq r -d1 "$DEPLOYMENT_FILE" metadata.name)
 
   #
   # deploy the app
   #
-  kubectl apply --namespace "$IBMCLOUD_IKS_CLUSTER_NAMESPACE" -f tmp-deployment.yaml
+  kubectl apply --namespace "$IBMCLOUD_IKS_CLUSTER_NAMESPACE" -f $DEPLOYMENT_FILE
   if kubectl rollout status --namespace "$IBMCLOUD_IKS_CLUSTER_NAMESPACE" "deployment/$deployment_name"; then
       status=success
       ((deploy_count+=1))
