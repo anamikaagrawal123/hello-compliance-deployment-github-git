@@ -4,11 +4,11 @@
 version: '1'
 
 setup:
-  image: ibmcom/pipeline-base-image:2.9
+  image: ibmcom/pipeline-base-image:2.6
   script: |
     #!/usr/bin/env bash
 
-    npm ci
+    source scripts/setup.sh
 
 deploy:
   image: ibmcom/pipeline-base-image:2.6
