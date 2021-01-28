@@ -23,6 +23,8 @@ deploy:
 
     source scripts/deploy_setup.sh
     source scripts/deploy.sh
+    export DEPLOY_EXIT=$?
+    source scripts/doi-publish-deploy.sh
 
 acceptance-test:
   image: icr.io/continuous-delivery/pipeline/pipeline-base-image:2.9@sha256:2976e1374e87f5cddabcf80179d9708868d52dbf656fdde60f803553be633db2
@@ -30,3 +32,5 @@ acceptance-test:
     #!/usr/bin/env bash
 
     source scripts/test.sh
+    export EXIT=$?
+    source scripts/doi-acceptance-test.sh
