@@ -4,14 +4,14 @@
 version: '1'
 
 setup:
-  image: ibmcom/pipeline-base-image:2.6
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-image:2.6@sha256:7f588468622a981f89cf5e1212aaf75fface9da6169b5345ca52ab63d8215907
   script: |
     #!/usr/bin/env bash
 
     source scripts/setup.sh
 
 deploy:
-  image: ibmcom/pipeline-base-image:2.6
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-image:2.6@sha256:7f588468622a981f89cf5e1212aaf75fface9da6169b5345ca52ab63d8215907
   script: |
     #!/usr/bin/env bash
 
@@ -25,7 +25,7 @@ deploy:
     source scripts/deploy.sh
 
 acceptance-test:
-  image: ibmcom/pipeline-base-image:2.9
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-image:2.9@sha256:2976e1374e87f5cddabcf80179d9708868d52dbf656fdde60f803553be633db2
   script: |
     #!/usr/bin/env bash
 
