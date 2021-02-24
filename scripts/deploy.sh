@@ -36,7 +36,7 @@ for INVENTORY_ENTRY in $(echo "${DEPLOYMENT_DELTA}" | jq -r '.[] '); do
   if kubectl get secret -n "$IBMCLOUD_IKS_CLUSTER_NAMESPACE" "$IMAGE_PULL_SECRET_NAME"; then
     echo "Image pull secret ${IMAGE_PULL_SECRET_NAME} found!"
   else
-    if [[ "$BREAK_GLASS" == true ]]; then
+    if [[ -n "$BREAK_GLASS" ]]; then
       kubectl create -f - <<EOF
 apiVersion: v1
 kind: Secret
