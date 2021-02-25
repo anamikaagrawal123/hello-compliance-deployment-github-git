@@ -42,7 +42,7 @@ IBMCLOUD_IKS_REGION="$(cat /config/dev-region | awk -F ":" '{print $NF}')"
 IBMCLOUD_IKS_CLUSTER_NAMESPACE="$(cat /config/dev-cluster-namespace)"
 IBMCLOUD_IKS_CLUSTER_NAME="$(cat /config/cluster-name)"
 
-if [[ "$BREAK_GLASS" == true ]]; then
+if [[ -n "$BREAK_GLASS" ]]; then
   export KUBECONFIG
   KUBECONFIG=/config/cluster-cert
 else
