@@ -36,7 +36,7 @@ echo ""
 
 ls -la ${INVENTORY_PATH}
 
-BREAK_GLASS=$(cat /config/break_glass || echo false)
+BREAK_GLASS=$(cat /config/break_glass || echo "")
 IBMCLOUD_TOOLCHAIN_ID="$(jq -r .toolchain_guid /toolchain/toolchain.json)"
 IBMCLOUD_IKS_REGION="$(cat /config/dev-region | awk -F ":" '{print $NF}')"
 IBMCLOUD_IKS_CLUSTER_NAMESPACE="$(cat /config/dev-cluster-namespace)"
