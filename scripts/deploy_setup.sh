@@ -49,4 +49,17 @@ else
   IBMCLOUD_IKS_REGION=$(echo "${IBMCLOUD_IKS_REGION}" | awk -F ":" '{print $NF}')
   ibmcloud login -r "$IBMCLOUD_IKS_REGION"
   eval "$(ibmcloud ks cluster config --cluster "$IBMCLOUD_IKS_CLUSTER_NAME" --export)"
+
+  #
+  # check pull traffic & storage quota in container registry
+  #
+  if ibmcloud cr quota | grep 'Your account has exceeded its pull traffic quota'; then
+    echo "Your account has exceeded its pull traffic quota for the current month. Review your pull traffic quota in the preceding table."
+    exit 1
+  fi
+
+  if ibmcloud cr quota | grep 'Your account has exceeded its storage quota'; then
+    echo "Your account has exceeded its storage quota. You can check your images at https://cloud.ibm.com/kubernetes/registry/main/images"
+    exit 1
+  fi
 fi
