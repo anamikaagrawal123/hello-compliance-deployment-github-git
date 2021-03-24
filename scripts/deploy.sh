@@ -97,8 +97,8 @@ EOF
   DEPLOYMENT_FILE="${NORMALIZED_APP_NAME}-deployment.yaml"
   curl -H "Authorization: token ${GHE_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
 
-  sed -i "s#hello-compliance-app#${NORMALIZED_APP_NAME}#g" $DEPLOYMENT_FILE
-  sed -i "s#hello-service#${NORMALIZED_APP_NAME}-service#g" $DEPLOYMENT_FILE
+  #sed -i "s#hello-compliance-app#${NORMALIZED_APP_NAME}#g" $DEPLOYMENT_FILE
+  #sed -i "s#hello-service#${NORMALIZED_APP_NAME}-service#g" $DEPLOYMENT_FILE
   sed -i "s~^\([[:blank:]]*\)image:.*$~\1image: ${IMAGE}~" $DEPLOYMENT_FILE
 
   deployment_name=$(yq r "$DEPLOYMENT_FILE" metadata.name)
