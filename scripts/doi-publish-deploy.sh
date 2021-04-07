@@ -32,8 +32,8 @@ fi
 TOOLCHAIN_ID=$(cat /config/doi-toolchain-id)
 CURRENT_TOOLCHAIN_ID=$(jq -r '.toolchain_guid' /toolchain/toolchain.json)
 DOI_IN_TOOLCHAIN=$(jq -e '[.services[] | select(.service_id=="draservicebroker")] | length' /toolchain/toolchain.json)
-DOI_ENVIRONMENT=$(cat /config/doi-environment)
-ENVIRONMENT=$(cat /config/environment)
+DOI_ENVIRONMENT=$(cat /config/doi-environment 2> /dev/null || echo "")
+ENVIRONMENT=$(cat /config/environment 2> /dev/null || echo "")
 DEPLOYMENT_DELTA_PATH="$(cat /config/deployment-delta-path)"
 DEPLOYMENT_DELTA=$(cat "${DEPLOYMENT_DELTA_PATH}")
 JOB_URL=$(cat /config/job-url)
@@ -65,11 +65,7 @@ fi
 export TOOLCHAIN_ID=${TOOLCHAIN_ID} # for doi plugin
 
 if [ "$DOI_ENVIRONMENT" ]; then
-  ENVIRONMENT=" --env \"$DOI_ENVIRONMENT\""
-elif [ "$ENVIRONMENT" ]; then
-  ENVIRONMENT=" --env \"$ENVIRONMENT\""
-else
-  ENVIRONMENT=""
+  ENVIRONMENT="$DOI_ENVIRONMENT"
 fi
 
 ibmcloud login --apikey "${IBMCLOUD_API_KEY}" -a "${IBM_CLOUD_API}" --no-region
@@ -77,8 +73,11 @@ ibmcloud login --apikey "${IBMCLOUD_API_KEY}" -a "${IBM_CLOUD_API}" --no-region
 
 for INVENTORY_ENTRY in $(echo "${DEPLOYMENT_DELTA}" | jq -r '.[] '); do
   APP=$(cat "${INVENTORY_PATH}/${INVENTORY_ENTRY}")
-  APP_NAME=$(echo "${APP}" | jq -r '.name')
   BUILD_NUMBER=$(echo "${APP}" | jq -r '.build_number')
+
+  APP_REPO=$(echo "${APP}" | jq -r '.repository_url')
+  APP_REPO=$(echo -n "${APP_REPO}" | sed 's:/*$::')
+  APP_NAME=$(echo "${APP_REPO}" | cut -f5 -d/)
 
   ibmcloud doi publishdeployrecord \
     --env "${ENVIRONMENT}" \
