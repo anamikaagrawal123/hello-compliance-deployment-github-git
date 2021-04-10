@@ -48,7 +48,7 @@ if [[ -n "$BREAK_GLASS" ]]; then
 else
   IBMCLOUD_IKS_REGION=$(echo "${IBMCLOUD_IKS_REGION}" | awk -F ":" '{print $NF}')
   ibmcloud login -r "$IBMCLOUD_IKS_REGION"
-  eval "$(ibmcloud ks cluster config --cluster "$IBMCLOUD_IKS_CLUSTER_NAME" --export)"
+  ibmcloud ks cluster config --cluster "$IBMCLOUD_IKS_CLUSTER_NAME"
 
   #
   # check pull traffic & storage quota in container registry
