@@ -50,6 +50,12 @@ else
   ibmcloud login -r "$IBMCLOUD_IKS_REGION"
   ibmcloud ks cluster config --cluster "$IBMCLOUD_IKS_CLUSTER_NAME"
 
+  ibmcloud ks cluster get --cluster "${IBMCLOUD_IKS_CLUSTER_NAME}" --json > "${IBMCLOUD_IKS_CLUSTER_NAME}.json"
+  # If the target cluster is openshift then make the appropriate additional login with oc tool
+  if which oc > /dev/null && jq -e '.type=="openshift"' "${IBMCLOUD_IKS_CLUSTER_NAME}.json" > /dev/null; then
+    echo "${IBMCLOUD_IKS_CLUSTER_NAME} is an openshift cluster. Doing the appropriate oc login to target it"
+    oc login -u apikey -p "${IBMCLOUD_API_KEY}"
+  fi
   #
   # check pull traffic & storage quota in container registry
   #
