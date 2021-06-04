@@ -83,8 +83,8 @@ EOF
   DEPLOYMENT_INVENTORY=$(cat "${INVENTORY_PATH}/${INVENTORY_ENTRY}_deployment")
   NORMALIZED_APP_NAME=$(echo "${APP_NAME}" | sed 's/\//--/g')
 
-  # we're in the deploy script folder, the GHE token is one folder up
-  export GHE_TOKEN="$(cat ../git-token)"
+  # we're in the deploy script folder, the GIT token is one folder up
+  export GIT_TOKEN="$(cat ../git-token)"
 
   #
   # read inventory entry for artifact
@@ -95,7 +95,13 @@ EOF
   # download artifact
   #
   DEPLOYMENT_FILE="${NORMALIZED_APP_NAME}-deployment.yaml"
-  curl -H "Authorization: token ${GHE_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
+
+  if [ "$SCM_TYPE" == "gitlab" ]; then
+    curl -H "PRIVATE-TOKEN: ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
+  else
+     curl -H "Authorization: token ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
+  fi
+ 
 
   #sed -i "s#hello-compliance-app#${NORMALIZED_APP_NAME}#g" $DEPLOYMENT_FILE
   #sed -i "s#hello-service#${NORMALIZED_APP_NAME}-service#g" $DEPLOYMENT_FILE
