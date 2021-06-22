@@ -9,5 +9,8 @@
   "devDependencies": {
     "jest": "^26.6.3",
     "axios": "^0.21.1"
+  },
+  "dependencies": {
+    "path-parse": "^1.0.7"
   }
 }
