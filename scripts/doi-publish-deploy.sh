@@ -71,6 +71,7 @@ fi
 ibmcloud login --apikey "${IBMCLOUD_API_KEY}" -a "${IBM_CLOUD_API}" --no-region
 
 
+declare -A app_hash_map
 for INVENTORY_ENTRY in $(echo "${DEPLOYMENT_DELTA}" | jq -r '.[] '); do
   APP=$(cat "${INVENTORY_PATH}/${INVENTORY_ENTRY}")
   BUILD_NUMBER=$(echo "${APP}" | jq -r '.build_number')
@@ -79,10 +80,13 @@ for INVENTORY_ENTRY in $(echo "${DEPLOYMENT_DELTA}" | jq -r '.[] '); do
   APP_REPO=$(echo -n "${APP_REPO}" | sed 's:/*$::')
   APP_NAME=$(echo "${APP_REPO}" | cut -f5 -d/)
 
-  ibmcloud doi publishdeployrecord \
-    --env "${ENVIRONMENT}" \
-    --status="${DEPLOY_STATUS}" \
-    --joburl="${JOB_URL}" \
-    --buildnumber="${BUILD_NUMBER}" \
-    --logicalappname="${APP_NAME}"
+  if [ ! "${app_hash_map[$APP_NAME]}" ] ; then 
+    ibmcloud doi publishdeployrecord \
+      --env "${ENVIRONMENT}" \
+      --status="${DEPLOY_STATUS}" \
+      --joburl="${JOB_URL}" \
+      --buildnumber="${BUILD_NUMBER}" \
+      --logicalappname="${APP_NAME}"
+  fi
+  app_hash_map[$APP_NAME]=1
 done

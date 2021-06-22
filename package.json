@@ -2,7 +2,7 @@
   "name": "hello-compliance-deployment",
   "private": true,
   "version": "0.0.1",
-  "description": "Acceptance tests for one-pipeline demo application",
+  "description": "Acceptance tests for pipeline demo application",
   "scripts": {
     "acceptance-test": "jest ./acceptance-test"
   },
