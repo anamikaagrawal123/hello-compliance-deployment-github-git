@@ -84,8 +84,8 @@ EOF
   NORMALIZED_APP_NAME=$(echo "${APP_NAME}" | sed 's/\//--/g')
 
   # we're in the deploy script folder, the GIT token is one folder up
-  export GIT_TOKEN="$(cat ../git-token)"
-
+  #export GIT_TOKEN="$(cat ../git-token)"
+  GIT_TOKEN="$(get_env app-token)"
   #
   # read inventory entry for artifact
   #
@@ -96,11 +96,11 @@ EOF
   #
   DEPLOYMENT_FILE="${NORMALIZED_APP_NAME}-deployment.yaml"
 
-  if [ "$SCM_TYPE" == "gitlab" ]; then
-    curl -H "PRIVATE-TOKEN: ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
-  else
+  #if [ "$SCM_TYPE" == "gitlab" ]; then
+  #  curl -H "PRIVATE-TOKEN: ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
+  #else
      curl -H "Authorization: token ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
-  fi
+  #fi
  
 
   #sed -i "s#hello-compliance-app#${NORMALIZED_APP_NAME}#g" $DEPLOYMENT_FILE
