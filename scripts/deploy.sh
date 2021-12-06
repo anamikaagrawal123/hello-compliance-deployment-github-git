@@ -99,7 +99,7 @@ EOF
   #if [ "$SCM_TYPE" == "gitlab" ]; then
   #  curl -H "PRIVATE-TOKEN: ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
   #else
-     curl -H "Authorization: Bearer ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
+     curl -H "Authorization: token ${GIT_TOKEN}" ${ARTIFACT_URL} > $DEPLOYMENT_FILE
   #fi
  
 
